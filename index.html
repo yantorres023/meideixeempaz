@@ -18,6 +18,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Instrument+Sans:wght@400;500;600;700&display=swap">
+<!-- Sem "offers" no JSON-LD de propósito: o preço varia por visitante no teste (TESTE_PRECO, no script) e não deve ser divulgado só a robôs. -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -27,11 +28,7 @@
       "name": "MEI Deixe em Paz",
       "applicationCategory": "BusinessApplication",
       "operatingSystem": "Web (PWA)",
-      "description": "Lembrete do DAS no WhatsApp antes do dia 20 e no dia, controle do limite de faturamento e checklist da declaração anual para MEI. Em desenvolvimento.",
-      "offers": [
-        { "@type": "Offer", "name": "Mensal", "price": 19.90, "priceCurrency": "BRL", "description": "Previsto para o lançamento" },
-        { "@type": "Offer", "name": "Anual", "price": 149, "priceCurrency": "BRL", "description": "Previsto para o lançamento. Equivale a R$ 12,42 por mês" }
-      ]
+      "description": "Lembrete do DAS no WhatsApp antes do dia 20 e no dia, controle do limite de faturamento e checklist da declaração anual para MEI. Em desenvolvimento."
     },
     {
       "@type": "FAQPage",
@@ -39,7 +36,7 @@
         { "@type": "Question", "name": "É do governo?", "acceptedAnswer": { "@type": "Answer", "text": "Não. O MEI Deixe em Paz é um app privado e independente. Não somos órgão do governo e não falamos em nome da Receita Federal." } },
         { "@type": "Question", "name": "Pede senha do gov.br?", "acceptedAnswer": { "@type": "Answer", "text": "Nunca. Não pedimos sua senha do gov.br, nem por WhatsApp, nem por e-mail, nem dentro do app." } },
         { "@type": "Question", "name": "Como pago o DAS?", "acceptedAnswer": { "@type": "Answer", "text": "Você paga direto à Receita Federal pelo canal oficial (PGMEI). O app não recebe nem repassa o dinheiro do seu DAS." } },
-        { "@type": "Question", "name": "Quanto custa e quando cobra?", "acceptedAnswer": { "@type": "Answer", "text": "Entrar na lista é grátis. Os preços são previstos para o lançamento: R$ 19,90 por mês ou R$ 149 por ano (equivale a R$ 12,42 por mês). Você só paga se contratar um plano depois do lançamento." } },
+        { "@type": "Question", "name": "Quanto custa e quando cobra?", "acceptedAnswer": { "@type": "Answer", "text": "Entrar na lista é grátis. Os preços são previstos para o lançamento e ainda estão em teste. Você só paga se contratar um plano depois do lançamento." } },
         { "@type": "Question", "name": "Como cancelo?", "acceptedAnswer": { "@type": "Answer", "text": "Você cancela sozinho, pelo próprio app, sem precisar falar com ninguém. Na renovação anual, avisamos antes." } },
         { "@type": "Question", "name": "Quando lança?", "acceptedAnswer": { "@type": "Answer", "text": "Ainda não temos data definida. Quem está na lista é avisado primeiro." } },
         { "@type": "Question", "name": "Meus dados estão protegidos? LGPD?", "acceptedAnswer": { "@type": "Answer", "text": "Usamos seus dados só para contato sobre a lista e o app, conforme a LGPD. Você pode pedir a exclusão a qualquer momento." } }
@@ -107,6 +104,8 @@
   }
   .btn:hover { background: #3A3129; }
   .btn:disabled { opacity: 0.6; cursor: progress; }
+  .btn-sec { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--ink); }
+  .btn-sec:hover { background: var(--card); }
   .link-arrow { color: var(--ink); font-weight: 700; text-decoration: none; border-bottom: 2px solid var(--amber); padding-bottom: 2px; }
 
   /* Cabeçalho */
@@ -237,6 +236,12 @@
   .alt .link-arrow { font-size: 0.95rem; }
   .sucesso { padding: 28px; border-radius: 18px; background: var(--amber-soft); }
   .sucesso h3 { color: var(--ink); font-family: "DM Serif Display", Georgia, serif; font-weight: 400; font-size: 1.8rem; }
+  /* Teste de preço: pergunta de intenção e campo-isca (honeypot) */
+  .int-pergunta { font-weight: 700; margin-bottom: 16px; }
+  .int-botoes { display: flex; flex-wrap: wrap; gap: 12px; margin: 0 0 14px; }
+  .int-botoes .btn { flex: 1 1 220px; padding: 10px 20px; text-align: center; }
+  .int-enviar { margin-top: 18px; }
+  .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 
   /* Confiança */
   .confia { display: grid; gap: 40px; }
@@ -409,7 +414,7 @@
         <li>
           <div class="num">1</div>
           <h3>Entre na lista</h3>
-          <p>Nome e WhatsApp. Se quiser, o CNPJ também. Não custa nada.</p>
+          <p>Nome e WhatsApp. Não custa nada.</p>
         </li>
         <li>
           <div class="num">2</div>
@@ -463,18 +468,18 @@
           <tbody>
             <tr>
               <th scope="row">Preço</th>
-              <td><strong>R$ 19,90</strong>por mês</td>
-              <td><strong>R$ 149</strong>por ano</td>
+              <td><strong data-preco="mensal">—</strong>por mês</td>
+              <td><strong data-preco="anual">—</strong>por ano</td>
             </tr>
             <tr>
               <th scope="row">Equivale a</th>
-              <td>R$ 19,90 por mês</td>
-              <td>R$ 12,42 por mês</td>
+              <td><span data-preco="mensal">—</span> por mês</td>
+              <td><span data-preco="anual-mes">—</span> por mês</td>
             </tr>
             <tr>
               <th scope="row">Economia no ano</th>
               <td>—</td>
-              <td><span class="amber">Economize R$ 89,80 (37%)</span><br>em relação a 12 × R$ 19,90 (R$ 238,80)</td>
+              <td><span class="amber">Economize <span data-preco="economia">—</span> (<span data-preco="economia-pct">—</span>)</span><br>em relação a 12 × <span data-preco="mensal">—</span> (<span data-preco="total-mensal">—</span>)</td>
             </tr>
             <tr>
               <th scope="row">Cancelamento</th>
@@ -490,6 +495,7 @@
         </table>
       </div>
       <p class="aviso-preco">Valores previstos para o lançamento. Você só paga se contratar um plano depois do lançamento.</p>
+      <p class="aviso-preco" data-aviso-teste>Preço em teste. O valor final pode mudar no lançamento.</p>
     </div>
   </section>
 
@@ -531,7 +537,7 @@
         </details>
         <details>
           <summary>Quanto custa e quando cobra?</summary>
-          <p>Entrar na lista é grátis. Os preços são previstos para o lançamento: R$ 19,90 por mês ou R$ 149 por ano (equivale a R$ 12,42 por mês). Você só paga se contratar um plano depois do lançamento.</p>
+          <p>Entrar na lista é grátis. Os preços são previstos para o lançamento: <span data-preco="faq">valores ainda em definição</span>. Você só paga se contratar um plano depois do lançamento.</p>
         </details>
         <details>
           <summary>Como cancelo?</summary>
@@ -590,10 +596,6 @@
       <label><span>E-mail <small>(opcional)</small></span><input type="email" name="email" autocomplete="email" placeholder="voce@exemplo.com.br"></label>
       <p class="erro" data-erro="email" aria-live="polite"></p>
     </div>
-    <div class="campo">
-      <label><span>CNPJ <small>(opcional)</small></span><input type="text" name="cnpj" inputmode="numeric" placeholder="00.000.000/0000-00" maxlength="18"></label>
-      <p class="erro" data-erro="cnpj" aria-live="polite"></p>
-    </div>
     <fieldset>
       <legend>Qual plano você pensa em usar?</legend>
       <div class="opts">
@@ -606,6 +608,7 @@
       <label class="consent"><input type="checkbox" name="consentimento" required><span>Autorizo o <span data-app-name>MEI Deixe em Paz</span> a me enviar mensagens pelo WhatsApp sobre a lista de espera. Sei que posso pedir a exclusão dos meus dados a qualquer momento (LGPD).</span></label>
       <p class="erro" data-erro="consentimento" aria-live="polite"></p>
     </div>
+    <div class="hp" aria-hidden="true"><label>Site <input type="text" name="site" tabindex="-1" autocomplete="off"></label></div>
     <button class="btn" type="submit">Entrar na lista</button>
     <p class="erro" data-erro-geral aria-live="assertive"></p>
   </form>
@@ -618,6 +621,20 @@
   const WAITLIST_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxHsopYWMatP1RUMnfGvPJkv9__unRdtiT35jK-m2V4CTxu-G9d_kzNcHocFxIPZzXBZg/exec'; // TODO: colar aqui a URL do Apps Script (termina em /exec)
   const WHATSAPP_URL = 'https://wa.me/55XXXXXXXXXXX?text=' + encodeURIComponent('Oi! Quero entrar na lista de espera do ' + APP_NAME + '.'); // TODO: número real
   const ORIGEM = 'landing-2';
+
+  // Teste de preço (fase 0): cada visitante vê UMA faixa, sorteada na primeira visita.
+  // O anual segue a mesma proporção de desconto de 149 / (12 × 19,90) ≈ 62,4% (convenção do plano, §6.11),
+  // arredondado para real inteiro: 9,90 → 74; 14,90 → 112; 19,90 → 149.
+  // `ativo: false` encerra o teste: a página passa a usar só a faixa C, sem sorteio.
+  const TESTE_PRECO = {
+    id: 'precos-v1',          // trocar se o desenho do teste mudar
+    ativo: true,
+    faixas: [
+      { id: 'A', mensal: 9.90,  anual: 74  },
+      { id: 'B', mensal: 14.90, anual: 112 }, // faixa intermediária: sugestão do plano, confirmada pelo Yan em 14/10/2026
+      { id: 'C', mensal: 19.90, anual: 149 }, // preço fornecido pelo Yan
+    ],
+  };
 
   // ===== Validação e máscaras =====
   const DDD_VALIDOS = new Set([11,12,13,14,15,16,17,18,19,21,22,24,27,28,31,32,33,34,35,37,38,41,42,43,44,45,46,47,48,49,51,53,54,55,61,62,63,64,65,66,67,68,69,71,73,74,75,77,79,81,82,83,84,85,86,87,88,89,91,92,93,94,95,96,97,98,99]);
@@ -633,33 +650,12 @@
     const d = soDigitos(v);
     return d.length === 11 && DDD_VALIDOS.has(Number(d.slice(0, 2))) && d[2] === '9';
   }
-  function maskCnpj(v) {
-    const d = soDigitos(v).slice(0, 14);
-    let out = d.slice(0, 2);
-    if (d.length > 2) out += '.' + d.slice(2, 5);
-    if (d.length > 5) out += '.' + d.slice(5, 8);
-    if (d.length > 8) out += '/' + d.slice(8, 12);
-    if (d.length > 12) out += '-' + d.slice(12, 14);
-    return out;
-  }
-  function cnpjValido(v) {
-    const d = soDigitos(v);
-    if (d.length !== 14 || /^(\d)\1{13}$/.test(d)) return false;
-    const dv = n => {
-      const pesos = n === 12 ? [5,4,3,2,9,8,7,6,5,4,3,2] : [6,5,4,3,2,9,8,7,6,5,4,3,2];
-      const soma = pesos.reduce((s, p, i) => s + Number(d[i]) * p, 0);
-      const r = soma % 11;
-      return r < 2 ? 0 : 11 - r;
-    };
-    return dv(12) === Number(d[12]) && dv(13) === Number(d[13]);
-  }
   function emailValido(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v); }
 
   const REGRAS = {
     nome: el => el.value.trim().length >= 2 ? '' : 'Informe seu nome.',
     whatsapp: el => whatsappValido(el.value) ? '' : 'Informe DDD + celular com 9 dígitos, ex.: (11) 91234-5678.',
     email: el => !el.value.trim() || emailValido(el.value.trim()) ? '' : 'Confira o e-mail, ex.: voce@exemplo.com.br.',
-    cnpj: el => !soDigitos(el.value) || cnpjValido(el.value) ? '' : 'CNPJ inválido. Confira os números.',
     consentimento: el => el.checked ? '' : 'Marque a caixa para autorizar o contato pelo WhatsApp.'
   };
 
@@ -685,21 +681,154 @@
   }
   const UTM = capturarUtm();
 
+  // ===== Teste de preço: faixa sorteada, id do visitante e storage =====
+  const K_VID = 'mdep_vid';
+  const K_FAIXA = 'mdep_faixa_' + TESTE_PRECO.id;
+  const K_VISITA = 'mdep_visita_' + TESTE_PRECO.id;
+  const K_INTENCAO = 'mdep_intencao_' + TESTE_PRECO.id;
+
+  // Todo acesso ao localStorage passa por aqui. Se falhar (bloqueio, modo privado), `storage.ok` vira false:
+  // faixa e id ficam só em memória e os eventos saem com storage=0.
+  const storage = {
+    ok: true,
+    get(k) { try { return localStorage.getItem(k); } catch (e) { this.ok = false; return null; } },
+    set(k, v) { try { localStorage.setItem(k, v); } catch (e) { this.ok = false; } }
+  };
+
+  function bytesAleatorios(n) {
+    const b = new Uint8Array(n);
+    try { crypto.getRandomValues(b); } catch (e) { for (let i = 0; i < n; i++) b[i] = Math.floor(Math.random() * 256); }
+    return b;
+  }
+  // Sorteio uniforme em [0, n) com crypto.getRandomValues; descarta o resto da divisão para não haver viés.
+  function sorteioUniforme(n) {
+    const lim = Math.floor(0x100000000 / n) * n;
+    const buf = new Uint32Array(1);
+    try {
+      do { crypto.getRandomValues(buf); } while (buf[0] >= lim);
+      return buf[0] % n;
+    } catch (e) { return Math.floor(Math.random() * n); } // navegador sem crypto: ainda sorteia
+  }
+  function novoVid() {
+    try { if (typeof crypto.randomUUID === 'function') return crypto.randomUUID(); } catch (e) { /* cai no plano B */ }
+    const b = bytesAleatorios(16);
+    b[6] = (b[6] & 0x0f) | 0x40; b[8] = (b[8] & 0x3f) | 0x80; // UUID v4
+    const h = Array.from(b, x => x.toString(16).padStart(2, '0')).join('');
+    return `${h.slice(0, 8)}-${h.slice(8, 12)}-${h.slice(12, 16)}-${h.slice(16, 20)}-${h.slice(20)}`;
+  }
+
+  const FAIXAS = TESTE_PRECO.faixas;
+  const FAIXA_PADRAO = FAIXAS.find(f => f.id === 'C') || FAIXAS[FAIXAS.length - 1];
+
+  function resolverFaixa() {
+    if (!TESTE_PRECO.ativo) return { faixa: FAIXA_PADRAO, forcada: false };
+    // QA: ?faixa=A|B|C força a faixa, marca forcada=1 nos eventos e NÃO grava a faixa nem as marcas no storage.
+    const pedida = (new URLSearchParams(location.search).get('faixa') || '').trim().toUpperCase();
+    const forcada = FAIXAS.find(f => f.id === pedida);
+    if (forcada) return { faixa: forcada, forcada: true };
+    const salva = storage.get(K_FAIXA);
+    const guardada = FAIXAS.find(f => f.id === salva);
+    if (guardada) return { faixa: guardada, forcada: false };
+    const sorteada = FAIXAS[sorteioUniforme(FAIXAS.length)];
+    storage.set(K_FAIXA, sorteada.id);
+    return { faixa: sorteada, forcada: false };
+  }
+  function resolverVid() {
+    const salvo = storage.get(K_VID);
+    if (salvo && /^[\w-]{8,64}$/.test(salvo)) return salvo;
+    const novo = novoVid();
+    storage.set(K_VID, novo);
+    return novo;
+  }
+
+  const { faixa: FAIXA, forcada: FORCADA } = resolverFaixa();
+  const VID = resolverVid();
+  // Com o teste desligado os eventos continuam saindo, mas com outro id, para não entrarem na análise do teste.
+  const TESTE_EVENTO = TESTE_PRECO.ativo ? TESTE_PRECO.id : TESTE_PRECO.id + '-inativo';
+
+  // ===== Preços da faixa (formato brasileiro: R$ 9,90; R$ 74) =====
+  const brl = (centavos, comCentavos) =>
+    'R$\u00A0' + String(Math.floor(centavos / 100)).replace(/\B(?=(\d{3})+(?!\d))/g, '.') +
+    (comCentavos ? ',' + String(centavos % 100).padStart(2, '0') : '');
+
+  function calcularPrecos(f) {
+    const mensal = Math.round(f.mensal * 100), anual = Math.round(f.anual * 100); // em centavos
+    const total = 12 * mensal, economia = total - anual;
+    const mensalTxt = brl(mensal, true);
+    const anualTxt = brl(anual, anual % 100 !== 0);
+    const anualMesTxt = brl(Math.round(anual / 12), true);
+    return {
+      mensal: mensalTxt,
+      anual: anualTxt,
+      'anual-mes': anualMesTxt,
+      'total-mensal': brl(total, true),
+      economia: brl(economia, true),
+      // arredonda para baixo: nunca anuncia um desconto maior que o real
+      'economia-pct': Math.floor(economia * 100 / total) + '%',
+      faq: `${mensalTxt} por mês ou ${anualTxt} por ano (equivale a ${anualMesTxt} por mês)`
+    };
+  }
+  const PRECO = calcularPrecos(FAIXA);
+
+  function mostrarPrecos() {
+    document.querySelectorAll('[data-preco]').forEach(el => {
+      const txt = PRECO[el.dataset.preco];
+      if (txt) el.textContent = txt;
+    });
+    // Sem teste ativo não há "preço em teste".
+    const aviso = document.querySelector('[data-aviso-teste]');
+    if (aviso && !TESTE_PRECO.ativo) aviso.hidden = true;
+  }
+
+  // ===== Eventos do teste (POST form-urlencoded, no-cors, para o mesmo WAITLIST_ENDPOINT) =====
+  const baseEvento = evento => ({
+    evento, teste: TESTE_EVENTO, faixa: FAIXA.id, vid: VID,
+    forcada: FORCADA ? '1' : '0', storage: storage.ok ? '1' : '0'
+  });
+
+  // Visita e intenção: falha silenciosa. A medição nunca atrapalha o visitante.
+  function enviarEvento(campos) {
+    if (WAITLIST_ENDPOINT.includes('TODO')) return;
+    try {
+      fetch(WAITLIST_ENDPOINT, { method: 'POST', mode: 'no-cors', body: new URLSearchParams(campos), keepalive: true })
+        .catch(() => {});
+    } catch (e) { /* ignora */ }
+  }
+
+  // Uma visita por visitante por teste. Em modo QA (?faixa=) sempre envia e não deixa marca no storage.
+  function registrarVisita() {
+    if (!FORCADA) {
+      if (storage.get(K_VISITA)) return;
+      storage.set(K_VISITA, '1');
+    }
+    let ref = '';
+    try { ref = document.referrer ? new URL(document.referrer).hostname : ''; } catch (e) { /* referrer inválido */ }
+    enviarEvento({
+      ...baseEvento('visita'),
+      utm_source: UTM.utm_source || '', utm_medium: UTM.utm_medium || '', utm_campaign: UTM.utm_campaign || '',
+      utm_content: UTM.utm_content || '', utm_term: UTM.utm_term || '',
+      pagina: location.origin + location.pathname, ref
+    });
+  }
+
   // ===== Envio =====
   async function enviarLista(payload) {
     if (WAITLIST_ENDPOINT.includes('TODO')) { await new Promise(r => setTimeout(r, 800)); return; }
     const u = payload.utm || {};
     const body = new URLSearchParams({
-      nome: payload.nome, whatsapp: payload.whatsapp, email: payload.email, cnpj: payload.cnpj,
+      ...baseEvento('inscricao'),
+      nome: payload.nome, whatsapp: payload.whatsapp, email: payload.email,
       plano: payload.plano, consentimento: payload.consentimentoWhatsapp ? 'sim' : 'nao',
+      preco_mensal: FAIXA.mensal.toFixed(2), preco_anual: String(FAIXA.anual), // valores exibidos ao visitante
       utm_source: u.utm_source || '', utm_medium: u.utm_medium || '', utm_campaign: u.utm_campaign || '',
-      utm_content: u.utm_content || '', pagina: location.href
+      utm_content: u.utm_content || '', utm_term: u.utm_term || '',
+      pagina: location.origin + location.pathname
     });
     // no-cors: a resposta é opaca; só falha em erro de rede.
     await fetch(WAITLIST_ENDPOINT, { method: 'POST', mode: 'no-cors', body });
   }
 
-  function mostrarSucesso(form) {
+  function mostrarSucesso(alvo) {
     const box = document.createElement('div');
     box.className = 'sucesso';
     box.setAttribute('role', 'status');
@@ -708,6 +837,76 @@
       <h3>Você está na lista.</h3>
       <p>Assim que o ${APP_NAME} estiver pronto, você é avisado primeiro.</p>
       <p><strong>Próximo passo:</strong> fique de olho no seu WhatsApp. Se quiser adiantar a conversa, <a href="${WHATSAPP_URL}" target="_blank" rel="noopener">fale com a gente pelo WhatsApp</a>.</p>`;
+    alvo.replaceWith(box);
+    box.focus();
+  }
+
+  // ===== Segunda etapa: "entraria pagando?" (sem cobrança) =====
+  const MOTIVOS = [
+    ['caro', 'Achei caro'],
+    ['nao-preciso', 'Não preciso disso agora'],
+    ['uso-outro', 'Já uso outro app ou o oficial'],
+    ['outro', 'Outro motivo']
+  ];
+  let intencaoPerguntada = false; // a pergunta já apareceu nesta página
+  let nPainel = 0;
+  // Uma resposta por visitante: se já respondeu (storage) ou a pergunta já está na tela, não pergunta de novo.
+  const devePerguntar = () => !intencaoPerguntada && (FORCADA || storage.get(K_INTENCAO) !== '1');
+
+  function mostrarIntencao(form) {
+    intencaoPerguntada = true;
+    const n = ++nPainel;
+    const box = document.createElement('div');
+    box.className = 'sucesso';
+    box.setAttribute('role', 'group');
+    box.setAttribute('aria-labelledby', `int-titulo-${n}`);
+    box.setAttribute('aria-describedby', `int-pergunta-${n}`);
+    box.tabIndex = -1;
+    box.innerHTML = `
+      <h3 id="int-titulo-${n}">Você está na lista.</h3>
+      <div data-passo="pergunta">
+        <p class="int-pergunta" id="int-pergunta-${n}">Quando abrir, você entraria pagando ${PRECO.mensal} por mês?</p>
+        <div class="int-botoes">
+          <button class="btn" type="button" data-resposta="quero">Quero entrar por ${PRECO.mensal}/mês</button>
+          <button class="btn btn-sec" type="button" data-resposta="agora-nao">Agora não</button>
+        </div>
+        <p class="small">Nada é cobrado agora. É só para sabermos quantas pessoas topam esse preço.</p>
+      </div>
+      <div data-passo="motivo" hidden>
+        <fieldset tabindex="-1">
+          <legend>Se quiser, conta o motivo:</legend>
+          <div class="opts">
+            ${MOTIVOS.map(([valor, texto]) => `<label><input type="radio" name="motivo-${n}" value="${valor}"> ${texto}</label>`).join('')}
+          </div>
+        </fieldset>
+        <button class="btn int-enviar" type="button" data-enviar-motivo>Enviar</button>
+      </div>`;
+
+    const passoPergunta = box.querySelector('[data-passo="pergunta"]');
+    const passoMotivo = box.querySelector('[data-passo="motivo"]');
+    let respondeu = false, motivoEnviado = false;
+
+    box.querySelectorAll('[data-resposta]').forEach(btn => btn.addEventListener('click', () => {
+      if (respondeu) return;
+      respondeu = true;
+      const resposta = btn.dataset.resposta;
+      if (!FORCADA) storage.set(K_INTENCAO, '1'); // uma resposta por visitante
+      // A resposta sai já no clique; o motivo, se vier, vai num segundo evento.
+      enviarEvento({ ...baseEvento('intencao'), resposta, motivo: '' });
+      if (resposta === 'quero') { mostrarSucesso(box); return; }
+      passoPergunta.hidden = true;
+      passoMotivo.hidden = false;
+      passoMotivo.querySelector('fieldset').focus();
+    }));
+
+    box.querySelector('[data-enviar-motivo]').addEventListener('click', () => {
+      if (motivoEnviado) return;
+      motivoEnviado = true;
+      const marcado = box.querySelector('input[type="radio"]:checked');
+      if (marcado) enviarEvento({ ...baseEvento('intencao'), resposta: 'agora-nao', motivo: marcado.value });
+      mostrarSucesso(box);
+    });
+
     form.replaceWith(box);
     box.focus();
   }
@@ -722,7 +921,6 @@
     });
 
     form.elements.whatsapp.addEventListener('input', e => { e.target.value = maskPhone(e.target.value); });
-    form.elements.cnpj.addEventListener('input', e => { e.target.value = maskCnpj(e.target.value); });
 
     Object.keys(REGRAS).forEach(nome => {
       const el = form.elements[nome];
@@ -733,6 +931,8 @@
 
     form.addEventListener('submit', async e => {
       e.preventDefault();
+      // Campo-isca: pessoa não preenche, robô sim. Finge sucesso e não envia nada.
+      if (form.elements.site.value.trim()) { mostrarSucesso(form); return; }
       const ok = Object.keys(REGRAS).map(nome => validarCampo(form, nome)).every(Boolean);
       if (!ok) { form.querySelector('[aria-invalid="true"]').focus(); return; }
 
@@ -743,7 +943,6 @@
         nome: f.nome.value.trim(),
         whatsapp: soDigitos(f.whatsapp.value),
         email: f.email.value.trim(),
-        cnpj: soDigitos(f.cnpj.value),
         plano: f.plano.value,
         consentimentoWhatsapp: f.consentimento.checked,
         origem: ORIGEM,
@@ -758,7 +957,7 @@
       try {
         await enviarLista(payload);
         // TODO: fbq('track','Lead'); gtag('event','generate_lead'); ttq.track('SubmitForm');
-        mostrarSucesso(form);
+        if (devePerguntar()) mostrarIntencao(form); else mostrarSucesso(form);
       } catch (err) {
         btn.disabled = false;
         btn.textContent = 'Entrar na lista';
@@ -770,11 +969,13 @@
 
   // ===== Inicialização =====
   document.querySelectorAll('[data-app-name]').forEach(el => { el.textContent = APP_NAME; });
+  mostrarPrecos();
 
   // Monta o mesmo formulário no meio e no fim da página (ids de erro ficam únicos por instância)
   const tpl = document.getElementById('tpl-lista');
   document.querySelectorAll('[data-mount-form]').forEach(m => m.replaceWith(tpl.content.cloneNode(true)));
   document.querySelectorAll('form[data-waitlist]').forEach(iniciarForm);
+  try { registrarVisita(); } catch (e) { /* a medição nunca derruba a página */ }
 })();
 </script>
 </body>
