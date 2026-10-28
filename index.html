@@ -560,7 +560,7 @@
     <div class="wrap lista-box">
       <div class="form-wrap">
         <p class="kicker">Último passo</p>
-        <h2>Não deixe o próximo dia 20 passar sem lembrete.</h2>
+        <h2>Lista de espera pausada.</h2>
         <p class="lead">Quando o app estiver pronto, você é avisado primeiro. Entrar é grátis.</p>
       </div>
       <div data-mount-form></div>
@@ -584,6 +584,7 @@
 <!-- Modelo do formulário: montado duas vezes (meio e fim da página) -->
 <template id="tpl-lista">
   <form data-waitlist novalidate>
+    <p class="aviso-pausa" role="status" style="font-weight:600;margin-bottom:12px">Inscrições pausadas. Nenhum dado é enviado nesta página.</p>
     <div class="campo">
       <label><span>Nome</span><input type="text" name="nome" autocomplete="name" required></label>
       <p class="erro" data-erro="nome" aria-live="polite"></p>
@@ -618,7 +619,9 @@
 (() => {
   // ===== Configuração: troque aqui =====
   const APP_NAME = 'MEI Deixe em Paz';
-  const WAITLIST_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxHsopYWMatP1RUMnfGvPJkv9__unRdtiT35jK-m2V4CTxu-G9d_kzNcHocFxIPZzXBZg/exec'; // TODO: colar aqui a URL do Apps Script (termina em /exec)
+  // Captação desligada em 28/10/2026 (autorizado pelo Yan): nenhuma requisição sai desta página.
+  const CAPTACAO_ATIVA = false;
+  const WAITLIST_ENDPOINT = '';
   const WHATSAPP_URL = 'https://wa.me/55XXXXXXXXXXX?text=' + encodeURIComponent('Oi! Quero entrar na lista de espera do ' + APP_NAME + '.'); // TODO: número real
   const ORIGEM = 'landing-2';
 
@@ -788,7 +791,7 @@
 
   // Visita e intenção: falha silenciosa. A medição nunca atrapalha o visitante.
   function enviarEvento(campos) {
-    if (WAITLIST_ENDPOINT.includes('TODO')) return;
+    if (!CAPTACAO_ATIVA || !WAITLIST_ENDPOINT) return;
     try {
       fetch(WAITLIST_ENDPOINT, { method: 'POST', mode: 'no-cors', body: new URLSearchParams(campos), keepalive: true })
         .catch(() => {});
@@ -813,7 +816,7 @@
 
   // ===== Envio =====
   async function enviarLista(payload) {
-    if (WAITLIST_ENDPOINT.includes('TODO')) { await new Promise(r => setTimeout(r, 800)); return; }
+    if (!CAPTACAO_ATIVA || !WAITLIST_ENDPOINT) throw new Error('captação desligada');
     const u = payload.utm || {};
     const body = new URLSearchParams({
       ...baseEvento('inscricao'),
@@ -835,8 +838,7 @@
     box.tabIndex = -1;
     box.innerHTML = `
       <h3>Você está na lista.</h3>
-      <p>Assim que o ${APP_NAME} estiver pronto, você é avisado primeiro.</p>
-      <p><strong>Próximo passo:</strong> fique de olho no seu WhatsApp. Se quiser adiantar a conversa, <a href="${WHATSAPP_URL}" target="_blank" rel="noopener">fale com a gente pelo WhatsApp</a>.</p>`;
+      <p>Assim que o ${APP_NAME} estiver pronto, você é avisado primeiro.</p>`;
     alvo.replaceWith(box);
     box.focus();
   }
@@ -931,6 +933,7 @@
 
     form.addEventListener('submit', async e => {
       e.preventDefault();
+      if (!CAPTACAO_ATIVA) return; // inscrições pausadas: sem envio e sem tela de sucesso
       // Campo-isca: pessoa não preenche, robô sim. Finge sucesso e não envia nada.
       if (form.elements.site.value.trim()) { mostrarSucesso(form); return; }
       const ok = Object.keys(REGRAS).map(nome => validarCampo(form, nome)).every(Boolean);
@@ -975,7 +978,13 @@
   const tpl = document.getElementById('tpl-lista');
   document.querySelectorAll('[data-mount-form]').forEach(m => m.replaceWith(tpl.content.cloneNode(true)));
   document.querySelectorAll('form[data-waitlist]').forEach(iniciarForm);
-  try { registrarVisita(); } catch (e) { /* a medição nunca derruba a página */ }
+  if (!CAPTACAO_ATIVA) {
+    document.querySelectorAll('form[data-waitlist]').forEach(f => {
+      Array.from(f.elements).forEach(el => { el.disabled = true; });
+      f.setAttribute('aria-disabled', 'true');
+    });
+  }
+  if (CAPTACAO_ATIVA) try { registrarVisita(); } catch (e) { /* a medição nunca derruba a página */ }
 })();
 </script>
 </body>
